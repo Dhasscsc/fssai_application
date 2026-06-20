@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>தாஸ் பொது சேவை மையம் - உணவுப் பாதுகாப்புச் சான்றிதழ் விண்ணப்பம்</title>
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --secondary: #0284c7;
+            --bg: #f0fdf4;
+            --surface: #ffffff;
+            --border: #cbd5e1;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+        body { background-color: var(--bg); padding: 20px; max-width: 1500px; margin: 0 auto; display: flex; gap: 20px; }
+        
+        .form-container { flex: 1.3; background: var(--surface); padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-top: 4px solid var(--primary); }
+        .sidebar { flex: 0.7; background: var(--surface); padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); max-height: 90vh; display: flex; flex-direction: column; }
+        
+        header { text-align: center; margin-bottom: 20px; padding: 10px; border-bottom: 2px solid var(--primary); }
+        header h1 { color: var(--primary); font-size: 1.6rem; }
+        
+        .action-bar { display: flex; gap: 10px; margin-bottom: 15px; }
+        .btn-blank { background: #e2e8f0; color: #1e293b; border: 1px solid #cbd5e1; font-weight: bold; padding: 12px; border-radius: 4px; cursor: pointer; width: 100%; font-size: 1rem; }
+        .btn-blank:hover { background: #cbd5e1; }
+
+        h2 { color: white; margin-bottom: 15px; font-size: 1.2rem; background: var(--primary); padding: 6px 10px; border-radius: 4px; }
+        h3 { color: var(--primary); margin: 10px 0 5px 0; font-size: 1rem; border-bottom: 1px dashed var(--border); padding-bottom: 3px; }
+        
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
+        .form-group { display: flex; flex-direction: column; gap: 4px; }
+        .full-width { grid-column: span 2; }
+        
+        label { font-weight: 600; font-size: 0.9rem; color: #334155; }
+        input, select, textarea { padding: 8px; border: 1px solid var(--border); border-radius: 4px; font-size: 0.95rem; }
+        input:focus, select:focus, textarea:focus { border-color: var(--primary); outline: none; }
+        
+        button[type="submit"] { padding: 12px; border: none; border-radius: 4px; font-size: 1rem; font-weight: bold; cursor: pointer; color: white; background: var(--primary); width: 100%; }
+        button[type="submit"]:hover { background: #15317e; }
+        
+        .history-list { overflow-y: auto; flex: 1; margin-top: 10px; display: flex; flex-direction: column; gap: 10px; }
+        .history-item { border: 1px solid var(--border); padding: 12px; border-radius: 6px; background: #f8fafc; cursor: pointer; transition: all 0.2s; }
+        .history-item:hover { border-color: var(--primary); background: #f1f5f9; }
+        .search-box { padding: 8px; margin-bottom: 15px; border: 1px solid var(--border); border-radius: 4px; width: 100%; }
+
+        /* PRINT STYLES */
+        #print-area { display: none; }
+        @media print {
+            @page { size: A4; margin: 10mm 12mm 10mm 12mm; }
+            html, body { background: #fff !important; background-color: #fff !important; width: 100%; height: 100%; }
+            body * { visibility: hidden; }
+            #print-area, #print-area * { visibility: visible; }
+            #print-area { 
+                display: block !important; 
+                position: absolute; 
+                left: 0; 
+                top: 0; 
+                width: 100%; 
+                background: #fff !important; 
+                color: #000; 
+            }
+            .p-header { text-align: center; margin-bottom: 20px; line-height: 1.4; }
+            .p-header h1 { font-size: 1.8rem; font-weight: bold; border-bottom: 2px solid #000; padding-bottom: 5px; display: inline-block; width: 100%; }
+            .p-header h3 { font-size: 1.1rem; margin-top: 5px; font-weight: normal; }
+            
+            .p-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 1.05rem; background: #fff !important; }
+            .p-table th, .p-table td { border: 1px solid #000 !important; padding: 11px 12px !important; text-align: left; vertical-align: middle; background: #fff !important; color: #000 !important; }
+            .p-table th { font-weight: bold; text-align: center; background: #f2f2f2 !important; font-size: 1.1rem; }
+            
+            .blank-row { height: 50px !important; font-size: 1.1rem; }
+            .blank-address-row { height: 80px !important; }
+            
+            .p-footer { display: flex; justify-content: space-between; margin-top: 60px; font-size: 1.1rem; padding: 0 10px; }
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; box-shadow: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="form-container">
+        <header>
+            <h1>தாஸ் பொது சேவை மையம்</h1>
+            <p>147எ, கிரேட் காட்டன் ரோடு, தூத்துக்குடி - 628001 | செல்: 9843232324</p>
+        </header>
+
+        <div class="action-bar">
+            <button type="button" class="btn-blank" onclick="printBlankForm()">🖨️ காலியான படிவத்தை பிரிண்ட் எடு (Blank Form)</button>
+        </div>
+
+        <h2>உணவுப் பாதுகாப்புச் சான்றிதழ் (FSSAI) விண்ணப்பப் படிவம்</h2>
+        <form id="fssaiForm">
+            <div class="grid">
+                <div class="form-group">
+                    <label>விண்ணப்ப வகை (Application Type):</label>
+                    <select id="applType" required>
+                        <option value="புதிய உணவுப் பாதுகாப்பு பதிவு (New FSSAI Registration)">புதிய பதிவு (New Registration - 1 Year)</option>
+                        <option value="உணவுப் பாதுகாப்பு உரிமம் புதுப்பித்தல் (FSSAI Renewal)">உரிமம் புதுப்பித்தல் (FRenewal)</option>
+                        <option value="FSSAI சான்றிதழ் திருத்தம் (FSSAI Modification)">சான்றிதழ் திருத்தம் (Modification)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>ஆதார் எண் (Aadhaar Number):</label>
+                    <input type="text" id="aadhaar" required pattern="[0-9]{12}" maxlength="12" placeholder="உரிமையாளரின் 12 இலக்க எண்">
+                </div>
+
+                <h3>வணிகம் & உரிமையாளர் விபரங்கள்</h3><div class="full-width"></div>
+
+                <div class="form-group">
+                    <label>உரிமையாளர் பெயர் (Name of Applicant):</label>
+                    <input type="text" id="ownerName" required style="text-transform: uppercase;" placeholder="ஆதாரில் உள்ளபடி">
+                </div>
+                <div class="form-group">
+                    <label>நிறுவனம் / கடையின் பெயர் (Company/Shop Name):</label>
+                    <input type="text" id="shopName" required style="text-transform: uppercase;" placeholder="உதா: DHASS FOODS / HOTEL">
+                </div>
+
+                <div class="form-group">
+                    <label>வணிகத்தின் வகை (Kind of Business):</label>
+                    <select id="businessType" required>
+                        <option value="சில்லறை வியாபாரி (Retailer)">சில்லறை வியாபாரி (Retailer / மளிகை கடை)</option>
+                        <option value="உணவகம் / ஹோட்டல் (Food Vending/Hotel)">உணவகம் / ஹோட்டல் (Hotel/Restaurant)</option>
+                        <option value="உற்பத்தியாளர் (Manufacturer)">உற்பத்தியாளர் (Manufacturer / தயாரிப்பாளர்)</option>
+                        <option value="இதர உணவு வணிகம் (Wholesaler/Others)">இதர உணவு வணிகம் (Wholesaler)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>விற்பனை/தயாரிப்பு உணவுப் பொருட்கள் (Food Items):</label>
+                    <input type="text" id="foodItems" required placeholder="உதா: மளிகை பொருட்கள், பேக்கரி பொருட்கள், சாப்பாடு">
+                </div>
+
+                <h3>கூடுதல் விபரங்கள் (Infrastructure Details)</h3><div class="full-width"></div>
+
+                <div class="form-group">
+                    <label>தண்ணீர் விநியோகம் (Source of Water Supply):</label>
+                    <select id="waterSupply" required>
+                        <option value="பொது விநியோகம் (Public)">பொது விநியோகம் (Public/Municipal)</option>
+                        <option value="சொந்த கிணறு/போர்வெல் (Private)">சொந்த கிணறு/போர்வெல் (Private Borewell)</option>
+                        <option value="தண்ணீர் தேவையில்லை (Not Applicable)">தண்ணீர் பயன்பாடு இல்லை (NA)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>மின்சார இணைப்பு எண் (EB Connection Number):</label>
+                    <input type="text" id="ebNumber" placeholder="கடையின் மின்சார எண் (இருப்பின் மட்டும்)">
+                </div>
+
+                <h3>தொடர்பு & முகவரி விபரங்கள் (Contact & Address)</h3><div class="full-width"></div>
+
+                <div class="form-group full-width">
+                    <label>கடை/வணிகம் நடைபெறும் இடத்தின் முகவரி (Shop/Premises Address):</label>
+                    <textarea id="address" rows="2" required placeholder="கதவு எண், தெரு பெயர், கிராமம்/நகரம், மாவட்டம் மற்றும் பின்கோடு"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>கைபேசி எண் (Mobile Number):</label>
+                    <input type="tel" id="phone" required pattern="[0-9]{10}" maxlength="10" placeholder="9876543210">
+                </div>
+                <div class="form-group">
+                    <label>மின்னஞ்சல் முகவரி (Email ID):</label>
+                    <input type="email" id="email" required placeholder="name@gmail.com">
+                </div>
+            </div>
+
+            <button type="submit">💾 விபரங்களைச் சேமி & பிரிண்ட் எடு</button>
+        </form>
+    </div>
+
+    <div class="sidebar">
+        <h2>பதிவு செய்யப்பட்டவை</h2>
+        <input type="text" id="search" class="search-box" placeholder="பெயர் / கடை பெயர் / போன் மூலம் தேட..." oninput="loadData()">
+        <div class="history-list" id="historyList"></div>
+    </div>
+
+    <div id="print-area">
+        <div class="p-header">
+            <h1>உணவுப் பாதுகாப்புச் சான்றிதழ் (FSSAI) விண்ணப்ப விபரங்கள்</h1>
+            <h3>தாஸ் பொது சேவை மையம், தூத்துக்குடி</h3>
+        </div>
+
+        <table class="p-table">
+            <thead>
+                <tr>
+                    <th style="width: 8%;">வ.எண்</th>
+                    <th style="width: 37%;">விண்ணப்ப விபரம்</th>
+                    <th style="width: 55%;">பதிவு செய்ய வேண்டிய விபரம்</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="p-row">
+                    <td style="text-align: center;">1</td>
+                    <td><strong>விண்ணப்ப வகை</strong></td>
+                    <td><strong id="pType"></strong></td>
+                </tr>
+                <tr class="p-row">
+                    <td style="text-align: center;">2</td>
+                    <td><strong>ஆதார் எண் (Aadhaar No)</strong></td>
+                    <td><strong id="pAadhaar" style="color: blue;"></strong></td>
+                </tr>
+                <tr class="p-row">
+                    <td style="text-align: center;">3</td>
+                    <td>உரிமையாளர் பெயர் (Applicant Name)</td>
+                    <td id="pOwnerName" style="font-weight: bold; text-transform: uppercase;"></td>
+                </tr>
+                <tr class="p-row">
+                    <td style="text-align: center;">4</td>
+                    <td>நிறுவனம் / கடையின் பெயர் (Shop Name)</td>
+                    <td id="pShopName" style="font-weight: bold; text-transform: uppercase;"></td>
+                </tr>
+                <tr class="p-row">
+                    <td style="text-align: center;">5</td>
+                    <td>வணிகத்தின் வகை (Kind of Business)</td>
+                    <td id="pBusinessType"></td>
+                </tr>
+                <tr class="p-row">
+                    <td style="text-align: center;">6</td>
+                    <td>விற்பனை/தயாரிப்பு உணவு வகைகள்</td>
+                    <td id="pFoodItems"></td>
+                </tr>
+                <tr class="p-row">
+                    <td style="text-align: center;">7</td>
+                    <td>தண்ணீர் விநியோகம் (Water Source)</td>
+                    <td id="pWaterSupply"></td>
+                </tr>
+                <tr class="p-row">
+                    <td style="text-align: center;">8</td>
+                    <td>மின்சார இணைப்பு எண் (EB No)</td>
+                    <td id="pEbNumber"></td>
+                </tr>
+                <tr id="pAddressRow" class="p-row">
+                    <td style="text-align: center;">9</td>
+                    <td>கடையின் முகவரி (Premises Address)</td>
+                    <td id="pAddress"></td>
+                </tr>
+                <tr id="pContactRow" class="p-row">
+                    <td style="text-align: center;">10</td>
+                    <td>தொடர்பு விபரங்கள் (Contact)</td>
+                    <td id="pContact"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="p-footer">
+            <div><strong>நாள் / தேதி :</strong> <span id="pCurrentDate">___________________</span></div>
+            <div><strong>விண்ணப்பத்தாரர் கையொப்பம்</strong></div>
+        </div>
+    </div>
+
+    <script>
+        let db;
+        const request = indexedDB.open("FssaiFormDB", 1);
+        
+        request.onupgradeneeded = (e) => {
+            db = e.target.result;
+            db.createObjectStore("fssai_applications", { keyPath: "id", autoIncrement: true });
+        };
+        request.onsuccess = (e) => { db = e.target.result; loadData(); };
+
+        document.getElementById('fssaiForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const record = {
+                applType: document.getElementById('applType').value,
+                aadhaar: document.getElementById('aadhaar').value,
+                ownerName: document.getElementById('ownerName').value,
+                shopName: document.getElementById('shopName').value,
+                businessType: document.getElementById('businessType').value,
+                foodItems: document.getElementById('foodItems').value,
+                waterSupply: document.getElementById('waterSupply').value,
+                ebNumber: document.getElementById('ebNumber').value || "N/A",
+                address: document.getElementById('address').value,
+                phone: document.getElementById('phone').value,
+                email: document.getElementById('email').value,
+                date: new Date().toLocaleDateString('en-GB')
+            };
+
+            const tx = db.transaction("fssai_applications", "readwrite");
+            tx.objectStore("fssai_applications").add(record);
+            
+            tx.oncomplete = () => {
+                alert("உணவுப் பாதுகாப்புச் சான்றிதழ் விபரங்கள் வெற்றிகரமாகச் சேமிக்கப்பட்டன!");
+                loadData();
+                printFssai(record);
+                document.getElementById('fssaiForm').reset();
+            };
+        });
+
+        function loadData() {
+            const searchQ = document.getElementById('search').value.toLowerCase();
+            const list = document.getElementById('historyList');
+            list.innerHTML = "";
+
+            db.transaction("fssai_applications", "readonly").objectStore("fssai_applications").openCursor(null, "prev").onsuccess = (e) => {
+                const cursor = e.target.result;
+                if(cursor) {
+                    const v = cursor.value;
+                    if(v.ownerName.toLowerCase().includes(searchQ) || v.shopName.toLowerCase().includes(searchQ) || v.phone.includes(searchQ)) {
+                        const div = document.createElement('div');
+                        div.className = "history-item";
+                        div.onclick = () => printFssai(v);
+                        div.innerHTML = `
+                            <strong>${v.shopName}</strong><br>
+                            <small>👤 ${v.ownerName} | 📱 ${v.phone}<br>📋 ${v.applType.split(' ')[0]}</small>
+                        `;
+                        list.appendChild(div);
+                    }
+                    cursor.continue();
+                }
+            };
+        }
+
+        function resetRowStyles() {
+            const rows = document.querySelectorAll('.p-table tbody tr');
+            rows.forEach(row => {
+                row.classList.remove('blank-row');
+                row.classList.remove('blank-address-row');
+            });
+        }
+
+        function printFssai(v) {
+            resetRowStyles();
+            
+            document.getElementById('pType').innerText = v.applType;
+            document.getElementById('pAadhaar').innerText = v.aadhaar.replace(/(.{4})/g, '$1 ').trim();
+            document.getElementById('pOwnerName').innerText = v.ownerName;
+            document.getElementById('pShopName').innerText = v.shopName;
+            document.getElementById('pBusinessType').innerText = v.businessType;
+            document.getElementById('pFoodItems').innerText = v.foodItems;
+            document.getElementById('pWaterSupply').innerText = v.waterSupply;
+            document.getElementById('pEbNumber').innerText = v.ebNumber;
+            document.getElementById('pAddress').innerText = v.address;
+            
+            document.getElementById('pContact').innerHTML = `செல்: <strong>${v.phone}</strong><br>ஈமெயில்: ${v.email}`;
+            document.getElementById('pCurrentDate').innerHTML = v.date;
+
+            window.print();
+        }
+
+        function printBlankForm() {
+            resetRowStyles();
+            
+            const rows = document.querySelectorAll('.p-table tbody tr');
+            rows.forEach(row => {
+                if(row.id === 'pAddressRow' || row.id === 'pContactRow') {
+                    row.classList.add('blank-address-row');
+                } else {
+                    row.classList.add('blank-row');
+                }
+            });
+            
+            document.getElementById('pType').innerHTML = "&nbsp;";
+            document.getElementById('pAadhaar').innerHTML = "&nbsp;";
+            document.getElementById('pOwnerName').innerHTML = "&nbsp;";
+            document.getElementById('pShopName').innerHTML = "&nbsp;";
+            document.getElementById('pBusinessType').innerHTML = "&nbsp;";
+            document.getElementById('pFoodItems').innerHTML = "&nbsp;";
+            document.getElementById('pWaterSupply').innerHTML = "&nbsp;";
+            document.getElementById('pEbNumber').innerHTML = "&nbsp;";
+            document.getElementById('pAddress').innerHTML = "&nbsp;";
+            document.getElementById('pContact').innerHTML = "&nbsp;";
+            
+            document.getElementById('pCurrentDate').innerHTML = "___________________";
+
+            window.print();
+            loadData();
+        }
+    </script>
+</body>
+</html>
